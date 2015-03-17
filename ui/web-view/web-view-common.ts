@@ -12,6 +12,12 @@ var urlProperty = new dependencyObservable.Property(
     new proxy.PropertyMetadata("")
     );
 
+var htmlStringProperty = new dependencyObservable.Property(
+    "htmlString",
+    "WebView",
+    new proxy.PropertyMetadata("")
+    );
+
 function onUrlPropertyChanged(data: dependencyObservable.PropertyChangeData) {
     var webView = <WebView>data.object;
 
@@ -22,14 +28,27 @@ function onUrlPropertyChanged(data: dependencyObservable.PropertyChangeData) {
     webView._loadUrl(data.newValue);
 }
 
+function onHTMLStringPropertyChanged(data: dependencyObservable.PropertyChangeData) {
+    var webView = <WebView>data.object;
+
+    if (webView._suspendLoading) {
+        return;
+    }
+
+    webView._loadString(data.newValue);
+}
+
 // register the setNativeValue callback
 (<proxy.PropertyMetadata>urlProperty.metadata).onSetNativeValue = onUrlPropertyChanged;
+(<proxy.PropertyMetadata>htmlStringProperty.metadata).onSetNativeValue = onHTMLStringPropertyChanged;
 
 export class WebView extends view.View implements definition.WebView {
 
     public static urlProperty = urlProperty;
+    public static htmlStringProperty = htmlStringProperty;
 
     public _suspendLoading: boolean;
+    public shouldNavigate;
 
     constructor() {
         super();
@@ -41,6 +60,14 @@ export class WebView extends view.View implements definition.WebView {
 
     set url(value: string) {
         this._setValue(WebView.urlProperty, value);
+    }
+
+    get htmlString(): string {
+        return this._getValue(WebView.htmlStringProperty);
+    }
+
+    set htmlString(value: string) {
+        this._setValue(WebView.htmlStringProperty, value);
     }
 
     public _onFinished(url: string, error?: string) {
@@ -60,6 +87,10 @@ export class WebView extends view.View implements definition.WebView {
     }
 
     public _loadUrl(url: string) {
+        throw new Error("This member is abstract.");
+    }
+
+    public _loadString(html: string) {
         throw new Error("This member is abstract.");
     }
 

@@ -16,6 +16,10 @@ class WebViewClientClass extends android.webkit.WebViewClient {
 
     public shouldOverrideUrlLoading(view: android.webkit.WebView, url: string) {
         trace.write("WebViewClientClass.shouldOverrideUrlLoading(" + url + ")", trace.categories.Debug);
+        if (this._view.shouldNavigate) {
+            console.log('should navigate')
+            return !this._view.shouldNavigate(url);
+        }
         return false;
     }
 
@@ -64,6 +68,7 @@ export class WebView extends common.WebView {
         this._android = new android.webkit.WebView(this._context);
         this._android.getSettings().setJavaScriptEnabled(true);
         this._android.getSettings().setBuiltInZoomControls(true);
+        this._android.getSettings().setDisplayZoomControls(false);
         this._android.setWebViewClient(this._webViewClient);
     }
 
@@ -71,6 +76,13 @@ export class WebView extends common.WebView {
         trace.write("WebView._loadUrl(" + url + ")", trace.categories.Debug);
         this._android.stopLoading();
         this._android.loadUrl(url);
+    }
+
+    public _loadString(html: string) {
+        trace.write("WebView._loadString", trace.categories.Debug);
+        this._android.stopLoading();
+        console.log('LOAD HTML ARG')
+        this._android.loadDataWithBaseURL(null,html,"text/html","utf-8",null);
     }
 
     get canGoBack(): boolean {

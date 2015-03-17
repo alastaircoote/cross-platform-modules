@@ -17,6 +17,13 @@ class UIWebViewDelegateImpl extends NSObject implements UIWebViewDelegate {
         this._owner = owner;
         return this;
     }
+
+    public webViewShouldStartLoadWithRequestNavigationType(webView: UIWebView, request: NSURLRequest, navigationType: number) {
+        if (this._owner.shouldNavigate){
+            return this._owner.shouldNavigate(request.URL.absoluteString);
+        }
+        return true;
+    }
     
     public webViewDidStartLoad(webView: UIWebView) {
         trace.write("UIWebViewDelegateClass.webViewDidStartLoad()", trace.categories.Debug);
@@ -44,7 +51,6 @@ export class WebView extends common.WebView {
 
     constructor() {
         super();
-
         this._ios = new UIWebView();
         this._delegate = UIWebViewDelegateImpl.new().initWithOwner(this);
         this._ios.delegate = this._delegate;
@@ -61,6 +67,14 @@ export class WebView extends common.WebView {
             this._ios.stopLoading();
         }
         this._ios.loadRequest(NSURLRequest.requestWithURL(NSURL.URLWithString(url)));
+    }
+
+    public _loadString(html: string) {
+        trace.write("WebView._loadString", trace.categories.Debug);
+        if (this._ios.loading) {
+            this._ios.stopLoading();
+        }
+        this._ios.loadHTMLStringBaseURL(html,null);
     }
 
     get canGoBack(): boolean {
