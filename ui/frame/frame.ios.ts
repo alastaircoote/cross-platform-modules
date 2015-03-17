@@ -47,9 +47,9 @@ export class Frame extends frameCommon.Frame {
             animated = this._getIsAnimatedNavigation(backstackEntry.entry);
         }
 
-        if (this.backStack.length > 0) {
+        /*if (this.backStack.length > 0) {
             this._ios.showNavigationBar = true;
-        }
+        }*/
 
         viewController[ENTRY] = backstackEntry;
 
@@ -66,9 +66,9 @@ export class Frame extends frameCommon.Frame {
         this._ios.controller.popViewControllerAnimated(this._getIsAnimatedNavigation(entry));
         this._ios.controller.allowPop = false;
 
-        if (this.backStack.length === 0) {
+        /*if (this.backStack.length === 0) {
             this._ios.showNavigationBar = false;
-        }
+        }*/
     }
 
     public get ios(): any {
@@ -208,7 +208,7 @@ class iOSFrame implements definition.iOSFrame {
         this._controller = UINavigationControllerImpl.new().initWithOwner(owner);
         this._controller.delegate = this._controller;
         this._controller.automaticallyAdjustsScrollViewInsets = false;
-        this.showNavigationBar = false;
+        this.showNavigationBar = true;
     }
 
     public get controller() {

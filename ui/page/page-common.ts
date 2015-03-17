@@ -5,11 +5,27 @@ import frame = require("ui/frame");
 import styleScope = require("ui/styling/style-scope");
 import fs = require("file-system");
 import fileSystemAccess = require("file-system/file-system-access");
+import dependencyObservable = require("ui/core/dependency-observable");
+import proxy = require("ui/core/proxy");
 import trace = require("trace");
 
 export module knownEvents {
     export var navigatedTo = "navigatedTo";
 }
+
+var titleProperty = new dependencyObservable.Property(
+    "title",
+    "Page",
+    new proxy.PropertyMetadata("")
+    );
+
+function onTitlePropertyChanged(data: dependencyObservable.PropertyChangeData) {
+    var page = <Page>data.object;
+
+    page.title = data.newValue;
+}
+
+(<proxy.PropertyMetadata>titleProperty.metadata).onSetNativeValue = onTitlePropertyChanged;
 
 export class Page extends contentView.ContentView implements dts.Page {
     private _navigationContext: any;
@@ -24,6 +40,14 @@ export class Page extends contentView.ContentView implements dts.Page {
     public onLoaded() {
         this._applyCss();
         super.onLoaded();
+    }
+
+    get title(): string {
+        throw new Error("This member is abstract.");
+    }
+
+    set title(value: string) {
+        throw new Error("This member is abstract.");
     }
 
     get navigationContext(): any {

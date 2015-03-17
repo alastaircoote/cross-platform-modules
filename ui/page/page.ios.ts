@@ -68,6 +68,14 @@ export class Page extends pageCommon.Page {
     }
     }
 
+    get title(): string {
+        return this._ios.title;
+    }
+
+    set title(value: string) {
+        this._ios.title = value;
+    }
+
     get ios(): UIViewController {
         return this._ios;
     }

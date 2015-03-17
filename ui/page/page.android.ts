@@ -27,4 +27,12 @@ export class Page extends pageCommon.Page {
         this._isBackNavigation = isBackNavigation;
         super.onNavigatedFrom(isBackNavigation);
     }
+
+    get title(): string {
+        return this.frame.android.activity.getActionBar().getTitle();
+    }
+
+    set title(value: string) {
+        this.frame.android.activity.getActionBar().setTitle(value);
+    }
 }

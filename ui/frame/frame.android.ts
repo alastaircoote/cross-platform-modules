@@ -359,6 +359,7 @@ class NativeActivity extends com.tns.NativeScriptActivity {
         super.onCreate(savedInstanceState);
 
         this.androidFrame.setActivity(this);
+        this.getActionBar().setTitle("Test");
 
         // Create and set content container.
         var root = new view.NativeViewGroup(this);
